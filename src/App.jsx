@@ -1,13 +1,14 @@
-import { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import LandingScreen from './screens/LandingScreen';
 
-function App() {
-  const [count, setCount] = useState(0);
-
+const App = () => {
   return (
-    <>
-      <div className='bg-black'>Hello</div>
-    </>
+    <Router>
+      <Routes>
+        <Route path='/' element={<LandingScreen />} />
+      </Routes>
+    </Router>
   );
-}
+};
 
 export default App;

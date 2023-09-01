@@ -12,7 +12,6 @@ class Loader extends React.Component {
   }
 
   render() {
-    console.log(this.value);
     return (
       <Player
         className='pt-6'

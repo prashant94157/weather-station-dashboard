@@ -1,17 +1,33 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Alert from './Alert';
 
 const Search = ({ url, placeholder, keyword }) => {
+  const [ttl, setTtl] = useState(new Date('2022-03-25'));
+  const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
 
   const onSubmit = (e) => {
     e.preventDefault();
-    navigate(`${url}?${keyword}=${search}`);
+    if (search.length) {
+      let t = new Date();
+      t.setSeconds(t.getSeconds() - 60);
+
+      console.log(t, ttl, ttl < t);
+      if (ttl < t) {
+        setTtl(new Date());
+        navigate(`${url}?${keyword}=${search}`);
+      } else {
+        setMessage('You can search weather details after 1 min');
+        setTimeout(() => setMessage(''), 5000);
+      }
+    }
   };
 
   return (
     <div className='flex justify-center w-full'>
+      {message && <Alert>{message}</Alert>}
       <form className='w-4/5 lg:w-1/2' onSubmit={onSubmit} method='POST'>
         <label
           htmlFor='default-search'

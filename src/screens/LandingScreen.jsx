@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import Search from '../components/Search';
 import Loader from '../components/Loader';
 import { Link, useSearchParams } from 'react-router-dom';
 import Alert from '../components/Alert';
 import DisplayWeatherDetails from '../components/DisplayWeatherDetails';
-import Globe from '../components/Globe';
+import styled from 'styled-components';
+import { Canvas } from '@react-three/fiber';
+import AnimatedSphere from '../components/AnimatedSphere';
 
 const LandingScreen = () => {
-  const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
   const [weather, setWeather] = useState({
     cityName: '',
@@ -28,24 +29,11 @@ const LandingScreen = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      setLoading('true');
       const result = await fetch(URL);
       result.json().then((json) => {
-        console.log(json);
         if (json.error) {
           setMessage(json.error.message);
-          setWeather({
-            cityName: '',
-            country: '',
-            tempInC: '',
-            tempInF: '',
-            humidity: '',
-            windSpeed: '',
-            weatherCondition: '',
-            icon: '',
-          });
-          setLat('');
-          setLon('');
+          setTimeout(() => setMessage(''), 5000);
         } else {
           setWeather({
             cityName: json.location.name,
@@ -61,51 +49,57 @@ const LandingScreen = () => {
           setLon(json.location.lon);
         }
       });
-      setTimeout(() => setMessage(''), 5000);
-      setLoading(false);
     };
+
     if (city) fetchData();
   }, [city]);
 
   return (
-    <>
-      <div className='w-full flex justify-center items-center bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white h-20 sm:h-24 lg:h-32'>
-        <div className='font-extrabold text-3xl sm:text-4xl lg:text-6xl'>
+    <Wrapper className='app'>
+      <div className='flex items-center justify-center w-full h-20 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 sm:h-24 lg:h-32'>
+        <div className='text-3xl font-extrabold sm:text-4xl lg:text-6xl'>
           <Link to='/'>Weather Station Dashboard</Link>
         </div>
       </div>
-
-      <div className='min-h-[582px] sm:min-h-[558px] lg:min-h-[516px]'>
+      <div className=''>
         {message && <Alert>{message}</Alert>}
         <div className='pt-10'>
           <Search url='/' placeholder='Please enter city...' keyword='city' />
         </div>
         <div>
-          {city ? (
-            <div className='flex flex-col lg:flex-row'>
+          {weather && weather.country && weather.country.length && (
+            <div className='flex flex-col lg:flex-row lg:justify-center lg:items-center'>
               <DisplayWeatherDetails data={weather} />
-              <Globe lon={lon} lat={lat} />
+              <Canvas className='canvas'>
+                <Suspense fallback={null}>
+                  <AnimatedSphere lat={lat} lon={lon} city={weather.cityName} />
+                </Suspense>
+              </Canvas>
             </div>
-          ) : (
-            'Please enter city'
           )}
         </div>
-        {loading ? <Loader /> : ''}
       </div>
 
-      <div className='w-full flex justify-center items-center h-8 sm:h-10 lg:h-12 text-base sm:text-xl lg:text-2xl'>
+      {/* footer */}
+      <div className='flex items-center justify-center w-full h-8 text-base sm:h-10 lg:h-12 sm:text-xl lg:text-2xl'>
         <div>
           Contact us: @
           <a
             href='mailto:0166621m@gmail.com'
-            className='hover:cursor-pointer underline'
+            className='underline hover:cursor-pointer'
           >
-            Prashant maurya
+            Prashant Maurya
           </a>
         </div>
       </div>
-    </>
+    </Wrapper>
   );
 };
+
+const Wrapper = styled.div`
+  canvas {
+    height: 500px;
+  }
+`;
 
 export default LandingScreen;

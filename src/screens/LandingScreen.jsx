@@ -10,6 +10,7 @@ import Header from '../components/Header';
 import Footer from '../components/Footer';
 
 const LandingScreen = () => {
+  const [apiNum, setApiNum] = useState(1);
   const [message, setMessage] = useState('');
   const [weather, setWeather] = useState({
     cityName: '',
@@ -25,16 +26,29 @@ const LandingScreen = () => {
   const [lon, setLon] = useState('');
   let [searchParams, setSearchParams] = useSearchParams();
   const city = searchParams.get('city') || '';
-  const API_KEY = '5212c28022ad43ab9b9120418233108';
-  const URL = `http://api.weatherapi.com/v1/current.json?key=${API_KEY}&q=${city}&aqi=no`;
+  const API_KEY1 = '5212c28022ad43ab9b9120418233108';
+  const API_KEY2 = 'c3a5b201aab04c9987351641230209';
 
   useEffect(() => {
     const fetchData = async () => {
+      const URL = `http://api.weatherapi.com/v1/current.json?key=${
+        apiNum === 1 ? API_KEY1 : API_KEY2
+      }&q=${city}&aqi=no`;
       const result = await fetch(URL);
       result.json().then((json) => {
         if (json.error) {
-          setMessage(json.error.message);
-          setTimeout(() => setMessage(''), 5000);
+          if (
+            json.error.message === 'API key has exceeded calls per month quota.'
+          ) {
+            if (apiNum === 1) setApiNum(2);
+            else {
+              setMessage('Our API key has exceeded calls per month quota.');
+              setTimeout(() => setMessage(''), 5000);
+            }
+          } else {
+            setMessage(json.error.message);
+            setTimeout(() => setMessage(''), 5000);
+          }
         } else {
           setWeather({
             cityName: json.location.name,

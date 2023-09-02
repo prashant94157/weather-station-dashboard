@@ -12,9 +12,17 @@ const DisplayWeatherDetails = ({
   },
 }) => {
   return (
-    <div className='lg:w-1/2 px-20 lg:h-[437px] '>
-      <div className='mt-6'>
-        <dl className='divide-y divide-gray-200'>
+    <div className='lg:w-1/2 px-20 lg:pl-36 lg:-pr-10 lg:h-[437px] '>
+      <div class='px-4 sm:px-0'>
+        <h3 class='text-base font-semibold leading-7 text-gray-900'>
+          Weather Details
+        </h3>
+        <p class='mt-1 max-w-2xl text-sm leading-6 text-gray-500'>
+          Note: The city's location is shown by a red spot on the globe.
+        </p>
+      </div>
+      <div class='mt-6 border-t border-gray-100'>
+        <dl class='divide-y divide-gray-100'>
           <div className='grid grid-cols-3 gap-4 px-0 py-3'>
             <dt className='text-sm font-medium leading-6 text-gray-900'>
               City

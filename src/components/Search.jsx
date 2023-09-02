@@ -3,7 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import Alert from './Alert';
 
 const Search = ({ url, placeholder, keyword }) => {
+  // for api rate limit
   const [ttl, setTtl] = useState(new Date('2022-03-25'));
+  //for api error
   const [message, setMessage] = useState('');
   const [search, setSearch] = useState('');
   const navigate = useNavigate();
@@ -14,7 +16,6 @@ const Search = ({ url, placeholder, keyword }) => {
       let t = new Date();
       t.setSeconds(t.getSeconds() - 60);
 
-      console.log(t, ttl, ttl < t);
       if (ttl < t) {
         setTtl(new Date());
         navigate(`${url}?${keyword}=${search}`);
@@ -27,7 +28,9 @@ const Search = ({ url, placeholder, keyword }) => {
 
   return (
     <div className='flex justify-center w-full'>
+      {/* for showing errors */}
       {message && <Alert>{message}</Alert>}
+      
       <form className='w-4/5 lg:w-1/2' onSubmit={onSubmit} method='POST'>
         <label
           htmlFor='default-search'

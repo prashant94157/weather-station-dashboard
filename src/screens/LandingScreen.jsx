@@ -1,12 +1,13 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import Search from '../components/Search';
-import Loader from '../components/Loader';
 import { Link, useSearchParams } from 'react-router-dom';
 import Alert from '../components/Alert';
 import DisplayWeatherDetails from '../components/DisplayWeatherDetails';
 import styled from 'styled-components';
 import { Canvas } from '@react-three/fiber';
-import AnimatedSphere from '../components/AnimatedSphere';
+import Globe from '../components/Globe';
+import Header from '../components/Header';
+import Footer from '../components/Footer';
 
 const LandingScreen = () => {
   const [message, setMessage] = useState('');
@@ -56,23 +57,25 @@ const LandingScreen = () => {
 
   return (
     <Wrapper className='app'>
-      <div className='flex items-center justify-center w-full h-20 text-white bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 sm:h-24 lg:h-32'>
-        <div className='text-3xl font-extrabold sm:text-4xl lg:text-6xl'>
-          <Link to='/'>Weather Station Dashboard</Link>
-        </div>
-      </div>
+      <Header />
+
       <div className=''>
+        {/* shows error */}
         {message && <Alert>{message}</Alert>}
+
+        {/* Search bar */}
         <div className='pt-10'>
           <Search url='/' placeholder='Please enter city...' keyword='city' />
         </div>
+
         <div>
           {weather && weather.country && weather.country.length && (
             <div className='flex flex-col lg:flex-row lg:justify-center lg:items-center'>
               <DisplayWeatherDetails data={weather} />
+
               <Canvas className='canvas'>
                 <Suspense fallback={null}>
-                  <AnimatedSphere lat={lat} lon={lon} city={weather.cityName} />
+                  <Globe lat={lat} lon={lon} city={weather.cityName} />
                 </Suspense>
               </Canvas>
             </div>
@@ -80,18 +83,7 @@ const LandingScreen = () => {
         </div>
       </div>
 
-      {/* footer */}
-      <div className='flex items-center justify-center w-full h-8 text-base sm:h-10 lg:h-12 sm:text-xl lg:text-2xl'>
-        <div>
-          Contact us: @
-          <a
-            href='mailto:0166621m@gmail.com'
-            className='underline hover:cursor-pointer'
-          >
-            Prashant Maurya
-          </a>
-        </div>
-      </div>
+      <Footer />
     </Wrapper>
   );
 };
